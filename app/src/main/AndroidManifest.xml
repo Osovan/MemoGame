@@ -14,7 +14,10 @@
         android:theme="@style/Theme.MemoGame"
         tools:targetApi="31">
         <activity
-            android:name=".ui.InitMenu.MainActivity"
+            android:name=".ui.game.GameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.initMenu.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
