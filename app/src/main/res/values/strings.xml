@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">MemoGame</string>
+    <string name="easy_mode">fácil</string>
+    <string name="medium_mode">medio</string>
+    <string name="hard_mode">difícil</string>
+    <string name="current_wins">Victorias actuales: %d</string>
+    <string name="moves">Movimientos: %d</string>
+    <string name="pairs">parejas restantes: %d</string>
+    <string name="pref_key">userPrefs</string>
+    <string name="pref_wins">prefWins</string>
+    <string name="dialog_title_default">DialogTitleDefault</string>
+    <string name="dialog_title_win">Enhorabuena!</string>
+    <string name="dialog_title_lose">Game Over</string>
+    <string name="dialog_message_default">DialogMessageDefault</string>
+    <string name="dialog_message_win">Has ganado!</string>
+    <string name="dialog_message_lose">Lo siento, se ha acabado el tiempo</string>
+    <string name="button_no">No</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_back_menu">Volver al menú</string>
 </resources>

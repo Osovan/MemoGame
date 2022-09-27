@@ -4,15 +4,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@drawable/background_screen"
+    tools:context=".ui.InitMenu.MainActivity">
 
-    <TextView
+
+    <Button
+        android:id="@+id/btnEasy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/easy_mode"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg_theme" />
+
+
+    <Button
+        android:id="@+id/btnMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/medium_mode"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnEasy" />
+
+    <Button
+        android:id="@+id/btnHard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hard_mode"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnMedium" />
+
+    <ImageView
+        android:id="@+id/ivTitleGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/big_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rg_theme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="16sp"
+        app:layout_constraintTop_toBottomOf="@id/ivTitleGame">
+
+        <RadioButton
+            android:id="@+id/radio_rick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Rick&amp;Morty" />n
+
+        <RadioButton
+            android:id="@+id/radio_pokemon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pokemons" />
+
+    </RadioGroup>
+
+
+    <TextView
+        android:id="@+id/tvVictories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="25sp"
+        android:text="@string/current_wins"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnHard" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
