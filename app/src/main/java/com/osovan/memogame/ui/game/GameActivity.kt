@@ -3,7 +3,11 @@ package com.osovan.memogame.ui.game
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.RelativeLayout
+import android.widget.ShareActionProvider
 import androidx.activity.viewModels
+import androidx.core.content.res.ResourcesCompat
+import com.google.android.material.imageview.ShapeableImageView
 import com.osovan.memogame.R
 import com.osovan.memogame.databinding.ActivityGameBinding
 import com.osovan.memogame.utils.Constants.Companion.GAMEMODE_KEY
@@ -36,6 +40,11 @@ class GameActivity : AppCompatActivity() {
                views.forEach {
                     binding.glTable.addView(it)
                }
+               gameViewModel.managePairs(binding.glTable)
+          }
+
+          gameViewModel.cardImages.observe(this) {images ->
+               setImages(images)
           }
 
           gameViewModel.onCreate(gameMode, gameTheme)
@@ -48,5 +57,19 @@ class GameActivity : AppCompatActivity() {
 
      private fun getThemeFromIntent() {
           gameTheme = intent.extras!!.getInt(GAMETHEME_KEY)
+     }
+
+     private fun setImages(images: MutableList<Int>) {
+          for (i in 0 until binding.glTable.childCount) {
+               val rlayout = binding.glTable.getChildAt(i) as RelativeLayout
+               val imageView = rlayout.findViewWithTag<ShapeableImageView>("ivFront$i")
+               gameViewModel.cards[i].image = images[i]
+               imageView.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                         resources, images[i],
+                         null
+                    )
+               )
+          }
      }
 }
