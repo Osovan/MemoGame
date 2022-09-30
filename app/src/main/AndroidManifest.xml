@@ -4,6 +4,7 @@
     package="com.osovan.memogame">
 
     <application
+        android:name=".App.MemoGameApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
