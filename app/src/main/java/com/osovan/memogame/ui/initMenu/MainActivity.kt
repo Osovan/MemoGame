@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.RadioButton
+import com.osovan.memogame.App.MemoGameApp.Companion.mPrefs
+import com.osovan.memogame.R
 import com.osovan.memogame.databinding.ActivityMainBinding
 import com.osovan.memogame.ui.game.GameActivity
 import com.osovan.memogame.utils.Constants.Companion.GAMEMODE_KEY
@@ -59,5 +61,14 @@ class MainActivity : AppCompatActivity() {
                putExtra(GAMETHEME_KEY, gameTheme)
           }
           startActivity(intent)
+     }
+
+     private fun updateWins() {
+          binding.tvVictories.text = resources.getString(R.string.current_wins, mPrefs.getWins())
+     }
+
+     override fun onResume() {
+          super.onResume()
+          updateWins()
      }
 }

@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.imageview.ShapeableImageView
 import com.osovan.memogame.App.MemoGameApp.Companion.mAppContext
+import com.osovan.memogame.App.MemoGameApp.Companion.mPrefs
 import com.osovan.memogame.App.MemoGameApp.Companion.mResources
 import com.osovan.memogame.R
 import com.osovan.memogame.data.Card
@@ -53,6 +54,7 @@ class GameViewModel : ViewModel() {
      private lateinit var timer: CountDownTimer
      var currentTimerMillis = 0L
      private var gameStarted = false
+     private var isBlocked = false
 
      fun onCreate(gameMode: Int, gameTheme: Int) {
           viewModelScope.launch {
@@ -244,84 +246,92 @@ class GameViewModel : ViewModel() {
                val rv = gl.getChildAt(i)
                rv.setOnClickListener { rl ->
 
-                    if (!gameStarted) {
-                         startTimer()
-                         gameStarted = true
-                    }
+                    if (!isBlocked) {
 
-                    if (!cards[i].isVisible) {
-
-                         //obtenemos las partes de la tarjeta (delantera y trasera)
-                         val currentCardFront = rl.findViewWithTag<CardView>("cvFront$i")
-                         val currentCardBack = rl.findViewWithTag<CardView>("cvBack$i")
-
-                         //Añadimos las animaciones de volteo
-                         val currentFrontAnim = mAppContext.loadFrontAnimator.apply {
-                              setTarget(currentCardFront)
-                         }
-                         val currentBackAnim = mAppContext.loadBackAnimator.apply {
-                              setTarget(currentCardBack)
+                         if (!gameStarted) {
+                              startTimer()
+                              gameStarted = true
                          }
 
-                         val currentAnimatorSet = AnimatorSet()
-                         currentAnimatorSet.play(currentFrontAnim).with(currentBackAnim)
-                         currentAnimatorSet.start()
+                         if (!cards[i].isVisible) {
 
-                         //la marcamos como visible
-                         cards[i].isVisible = true
-                         visibleCards.add(i)
+                              //obtenemos las partes de la tarjeta (delantera y trasera)
+                              val currentCardFront = rl.findViewWithTag<CardView>("cvFront$i")
+                              val currentCardBack = rl.findViewWithTag<CardView>("cvBack$i")
 
-                         if (visibleCards.size == 2) {
-                              if (cards[visibleCards[0]].image == cards[visibleCards[1]].image) {
-                                   //si las 2 imagenes volteadas son iguales, son pareja
-                                   Log.d(TAG, "managePairs: IGUALES")
-                                   gamePairs.postValue(--pairs)
-                                   visibleCards.clear()
-                                   if (pairs == 0){
-                                        pauseTimer()
-                                        endGame.postValue(1)
-                                   }
-                              }else{
-                                   Log.d(TAG, "managePairs: DISTINTAS")
-                                   //si son diferentes las volvemos a girar
-                                   Handler(Looper.getMainLooper()).postDelayed({
-                                        val rvLast = gl.getChildAt(visibleCards[0])
-                                        val listCards = arrayListOf<CardView>()
-
-                                        listCards.add(rvLast.findViewWithTag("cvFront${visibleCards[0]}"))
-                                        listCards.add(rvLast.findViewWithTag("cvBack${visibleCards[0]}"))
-                                        listCards.add(currentCardFront)
-                                        listCards.add(currentCardBack)
-
-                                        val alAnimators = arrayListOf<Animator>()
-                                        listCards.forEachIndexed { index, cardView ->
-                                             if (index % 2 == 1) {
-                                                  val frontAnimA = mAppContext.loadFrontAnimator.apply {
-                                                       setTarget(cardView)
-                                                  }
-                                                  alAnimators.add(frontAnimA)
-                                             } else {
-                                                  val backAnimA = mAppContext.loadBackAnimator.apply {
-                                                       setTarget(cardView)
-                                                  }
-                                                  alAnimators.add(backAnimA)
-                                             }
-                                        }
-
-                                        val aSet = AnimatorSet()
-                                        aSet.play(alAnimators[0]).with(alAnimators[1]) //foto primera carta pulsada
-                                        aSet.play(alAnimators[1]).with(alAnimators[2])
-                                        aSet.play(alAnimators[2]).with(alAnimators[3]) //foto segunda carta pulsada
-                                        aSet.start()
-
-                                        cards[visibleCards[0]].isVisible = false
-                                        cards[visibleCards[1]].isVisible = false
-                                        visibleCards.clear()
-
-                                   }, 750)
-
+                              //Añadimos las animaciones de volteo
+                              val currentFrontAnim = mAppContext.loadFrontAnimator.apply {
+                                   setTarget(currentCardFront)
                               }
-                              gameMoves.postValue(++moves)
+                              val currentBackAnim = mAppContext.loadBackAnimator.apply {
+                                   setTarget(currentCardBack)
+                              }
+
+                              val currentAnimatorSet = AnimatorSet()
+                              currentAnimatorSet.play(currentFrontAnim).with(currentBackAnim)
+                              currentAnimatorSet.start()
+
+                              //la marcamos como visible
+                              cards[i].isVisible = true
+                              visibleCards.add(i)
+
+                              if (visibleCards.size == 2) {
+                                   if (cards[visibleCards[0]].image == cards[visibleCards[1]].image) {
+                                        //si las 2 imagenes volteadas son iguales, son pareja
+                                        Log.d(TAG, "managePairs: IGUALES")
+                                        gamePairs.postValue(--pairs)
+                                        visibleCards.clear()
+                                        if (pairs == 0) {
+                                             pauseTimer()
+                                             mPrefs.setWins(mPrefs.getWins()+1)
+                                             endGame.postValue(1)
+                                        }
+                                   } else {
+                                        Log.d(TAG, "managePairs: DISTINTAS")
+                                        //si son diferentes las volvemos a girar
+                                        Handler(Looper.getMainLooper()).postDelayed({
+                                             val rvLast = gl.getChildAt(visibleCards[0])
+                                             val listCards = arrayListOf<CardView>()
+
+                                             listCards.add(rvLast.findViewWithTag("cvFront${visibleCards[0]}"))
+                                             listCards.add(rvLast.findViewWithTag("cvBack${visibleCards[0]}"))
+                                             listCards.add(currentCardFront)
+                                             listCards.add(currentCardBack)
+
+                                             val alAnimators = arrayListOf<Animator>()
+                                             listCards.forEachIndexed { index, cardView ->
+                                                  if (index % 2 == 1) {
+                                                       val frontAnimA =
+                                                            mAppContext.loadFrontAnimator.apply {
+                                                                 setTarget(cardView)
+                                                            }
+                                                       alAnimators.add(frontAnimA)
+                                                  } else {
+                                                       val backAnimA =
+                                                            mAppContext.loadBackAnimator.apply {
+                                                                 setTarget(cardView)
+                                                            }
+                                                       alAnimators.add(backAnimA)
+                                                  }
+                                             }
+
+                                             val aSet = AnimatorSet()
+                                             aSet.play(alAnimators[0])
+                                                  .with(alAnimators[1]) //foto primera carta pulsada
+                                             aSet.play(alAnimators[1]).with(alAnimators[2])
+                                             aSet.play(alAnimators[2])
+                                                  .with(alAnimators[3]) //foto segunda carta pulsada
+                                             aSet.start()
+
+                                             cards[visibleCards[0]].isVisible = false
+                                             cards[visibleCards[1]].isVisible = false
+                                             visibleCards.clear()
+                                             isBlocked = false
+                                        }, 750)
+                                        isBlocked = true
+                                   }
+                                   gameMoves.postValue(++moves)
+                              }
                          }
                     }
                }
