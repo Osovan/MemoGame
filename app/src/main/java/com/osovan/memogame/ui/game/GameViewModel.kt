@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -38,14 +39,20 @@ class GameViewModel : ViewModel() {
      val cardImages = MutableLiveData<ArrayList<Int>>()
      val gamePairs = MutableLiveData<Int>()
      val gameMoves = MutableLiveData<Int>()
-     var cards = mutableListOf<Card>()
+     val endGame = MutableLiveData<Int>()
+     val gameTimer = MutableLiveData<Long>()
 
+
+     var cards = mutableListOf<Card>()
      private var col by Delegates.notNull<Int>()
      private var boardSize by Delegates.notNull<Int>()
      private var pairs = 0
      private var moves = 0
      private val visibleCards = mutableListOf<Int>()
-
+     private var timeLevel: Long = 0
+     private lateinit var timer: CountDownTimer
+     var currentTimerMillis = 0L
+     private var gameStarted = false
 
      fun onCreate(gameMode: Int, gameTheme: Int) {
           viewModelScope.launch {
@@ -55,9 +62,39 @@ class GameViewModel : ViewModel() {
                     gameBoardViews.postValue(createBoardViews())
                     cardImages.postValue(selectImages(getAllDrawables(gameTheme)))
                     gameMoves.postValue(moves)
+               }
+               timeLevel = when(gameMode) {
+                    0 -> 60000
+                    1 -> 90000
+                    else -> 120000
+               }
+               setupTimer(timeLevel)
+          }
+     }
 
+     /**
+      * Función para crear el timer de la progressbar
+      */
+     private fun setupTimer(timeLevel: Long) {
+          timer = object: CountDownTimer(timeLevel, 100) {
+               override fun onTick(p0: Long) {
+                    currentTimerMillis = p0
+                    gameTimer.postValue(p0)
+               }
+
+               override fun onFinish() {
+                    gameTimer.postValue(0)
+                    endGame.postValue(0)
                }
           }
+     }
+
+     private fun startTimer() {
+          timer.start()
+     }
+
+     private fun pauseTimer() {
+          timer.cancel()
      }
 
      /**
@@ -206,6 +243,12 @@ class GameViewModel : ViewModel() {
           for (i in 0 until gl.childCount) {
                val rv = gl.getChildAt(i)
                rv.setOnClickListener { rl ->
+
+                    if (!gameStarted) {
+                         startTimer()
+                         gameStarted = true
+                    }
+
                     if (!cards[i].isVisible) {
 
                          //obtenemos las partes de la tarjeta (delantera y trasera)
@@ -234,6 +277,10 @@ class GameViewModel : ViewModel() {
                                    Log.d(TAG, "managePairs: IGUALES")
                                    gamePairs.postValue(--pairs)
                                    visibleCards.clear()
+                                   if (pairs == 0){
+                                        pauseTimer()
+                                        endGame.postValue(1)
+                                   }
                               }else{
                                    Log.d(TAG, "managePairs: DISTINTAS")
                                    //si son diferentes las volvemos a girar

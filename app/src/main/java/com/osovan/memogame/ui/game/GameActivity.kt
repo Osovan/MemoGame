@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.RelativeLayout
 import android.widget.ShareActionProvider
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.imageview.ShapeableImageView
@@ -27,6 +28,8 @@ class GameActivity : AppCompatActivity() {
 
           getModeFromIntent()
           getThemeFromIntent()
+
+          setProgressBar(gameMode)
           Log.d(TAG, "onCreate: gameMode = $gameMode")
 
           gameViewModel.gameBoardSize.observe(this) { size ->
@@ -55,6 +58,23 @@ class GameActivity : AppCompatActivity() {
                binding.tvPairs.text = resources.getString(R.string.pairs, pairs)
           }
 
+          gameViewModel.gameTimer.observe(this) { progress ->
+               binding.pbTime.progress = progress.toInt()
+          }
+
+          gameViewModel.endGame.observe(this) { endMode ->
+               when(endMode) {
+                    0 -> {
+                         Log.d(TAG, "onCreate: HAS PERDIDO!!")
+                         Toast.makeText(this, "HAS PERDIDO", Toast.LENGTH_SHORT).show()
+                    }
+                    1 -> {
+                         Log.d(TAG, "onCreate: HAS GANADO!!")
+                         Toast.makeText(this, "HAS GANADO!", Toast.LENGTH_SHORT).show()
+                    }
+               }
+          }
+
           gameViewModel.onCreate(gameMode, gameTheme)
 
      }
@@ -79,5 +99,15 @@ class GameActivity : AppCompatActivity() {
                     )
                )
           }
+     }
+
+     private fun setProgressBar(gameMode: Int) {
+          val valueBar: Int = when(gameMode) {
+               0 -> 60000
+               1 -> 90000
+               else -> 120000
+          }
+          binding.pbTime.max = valueBar
+          binding.pbTime.progress = valueBar
      }
 }
