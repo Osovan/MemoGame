@@ -37,11 +37,13 @@ class GameViewModel : ViewModel() {
      val gameBoardViews = MutableLiveData<ArrayList<RelativeLayout>>()
      val cardImages = MutableLiveData<ArrayList<Int>>()
      val gamePairs = MutableLiveData<Int>()
+     val gameMoves = MutableLiveData<Int>()
      var cards = mutableListOf<Card>()
 
      private var col by Delegates.notNull<Int>()
      private var boardSize by Delegates.notNull<Int>()
      private var pairs = 0
+     private var moves = 0
      private val visibleCards = mutableListOf<Int>()
 
 
@@ -52,6 +54,7 @@ class GameViewModel : ViewModel() {
                     gamePairs.postValue(pairs)
                     gameBoardViews.postValue(createBoardViews())
                     cardImages.postValue(selectImages(getAllDrawables(gameTheme)))
+                    gameMoves.postValue(moves)
 
                }
           }
@@ -229,6 +232,7 @@ class GameViewModel : ViewModel() {
                               if (cards[visibleCards[0]].image == cards[visibleCards[1]].image) {
                                    //si las 2 imagenes volteadas son iguales, son pareja
                                    Log.d(TAG, "managePairs: IGUALES")
+                                   gamePairs.postValue(--pairs)
                                    visibleCards.clear()
                               }else{
                                    Log.d(TAG, "managePairs: DISTINTAS")
@@ -269,10 +273,8 @@ class GameViewModel : ViewModel() {
 
                                    }, 750)
 
-
-
-
                               }
+                              gameMoves.postValue(++moves)
                          }
                     }
                }

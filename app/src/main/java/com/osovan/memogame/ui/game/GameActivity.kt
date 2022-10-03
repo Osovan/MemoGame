@@ -47,6 +47,14 @@ class GameActivity : AppCompatActivity() {
                setImages(images)
           }
 
+          gameViewModel.gameMoves.observe(this) { moves ->
+               binding.tvMoves.text = resources.getString(R.string.moves, moves)
+          }
+
+          gameViewModel.gamePairs.observe(this) {  pairs ->
+               binding.tvPairs.text = resources.getString(R.string.pairs, pairs)
+          }
+
           gameViewModel.onCreate(gameMode, gameTheme)
 
      }
