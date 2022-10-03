@@ -12,6 +12,7 @@
         android:id="@+id/btnEasy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/easy_mode"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -50,7 +51,7 @@
         android:id="@+id/rg_theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingVertical="16sp"
@@ -60,14 +61,18 @@
             android:id="@+id/radio_rick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/radiobutton_background"
+            android:button="@drawable/small_logo_rick"
             android:checked="true"
-            android:text="Rick&amp;Morty" />n
+            android:theme="@style/MyRadioButton" />
 
         <RadioButton
             android:id="@+id/radio_pokemon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pokemons" />
+            android:background="@drawable/radiobutton_background"
+            android:button="@drawable/small_logo_pokemon"
+            android:theme="@style/MyRadioButton" />
 
     </RadioGroup>
 

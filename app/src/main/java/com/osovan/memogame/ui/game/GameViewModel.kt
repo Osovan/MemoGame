@@ -53,7 +53,7 @@ class GameViewModel : ViewModel() {
      private var timeLevel: Long = 0
      private lateinit var timer: CountDownTimer
      var currentTimerMillis = 0L
-     private var gameStarted = false
+     var gameStarted = false
      private var isBlocked = false
 
      fun onCreate(gameMode: Int, gameTheme: Int) {
@@ -65,7 +65,7 @@ class GameViewModel : ViewModel() {
                     cardImages.postValue(selectImages(getAllDrawables(gameTheme)))
                     gameMoves.postValue(moves)
                }
-               timeLevel = when(gameMode) {
+               timeLevel = when (gameMode) {
                     0 -> 60000
                     1 -> 90000
                     else -> 120000
@@ -78,7 +78,7 @@ class GameViewModel : ViewModel() {
       * Función para crear el timer de la progressbar
       */
      private fun setupTimer(timeLevel: Long) {
-          timer = object: CountDownTimer(timeLevel, 100) {
+          timer = object : CountDownTimer(timeLevel, 100) {
                override fun onTick(p0: Long) {
                     currentTimerMillis = p0
                     gameTimer.postValue(p0)
@@ -95,8 +95,22 @@ class GameViewModel : ViewModel() {
           timer.start()
      }
 
-     private fun pauseTimer() {
+     fun pauseTimer() {
           timer.cancel()
+     }
+
+     fun resumeTimer() {
+          timer = object : CountDownTimer(currentTimerMillis, 100) {
+               override fun onTick(tick: Long) {
+                    currentTimerMillis = tick
+                    gameTimer.postValue(tick)
+               }
+
+               override fun onFinish() {
+                    gameTimer.postValue(0)
+                    endGame.postValue(0)
+               }
+          }.start()
      }
 
      /**
@@ -283,7 +297,7 @@ class GameViewModel : ViewModel() {
                                         visibleCards.clear()
                                         if (pairs == 0) {
                                              pauseTimer()
-                                             mPrefs.setWins(mPrefs.getWins()+1)
+                                             mPrefs.setWins(mPrefs.getWins() + 1)
                                              endGame.postValue(1)
                                         }
                                    } else {

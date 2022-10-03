@@ -1,10 +1,10 @@
 package com.osovan.memogame.ui.initMenu
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.RadioButton
+import androidx.appcompat.app.AppCompatActivity
 import com.osovan.memogame.App.MemoGameApp.Companion.mPrefs
 import com.osovan.memogame.R
 import com.osovan.memogame.databinding.ActivityMainBinding
@@ -29,14 +29,11 @@ class MainActivity : AppCompatActivity() {
                rgTheme.setOnCheckedChangeListener { radioGroup, i ->
                     val radio: RadioButton = findViewById(i)
 
-                    themeImages = with(radio.text) {
-                         when {
-                              contains("Ricky") -> 0
-                              contains("Pokemon") -> 1
-                              else -> 0
+                    themeImages =
+                         when (radio) {
+                              radioRick -> 0
+                              else -> 1
                          }
-                    }
-
                }
 
 
