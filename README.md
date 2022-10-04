@@ -6,17 +6,12 @@ Aplicación en Android nativo con Kotlin, creada para uno de los retos mensuales
 
 
 ### Tecnologías  y librerías usadas
-Android Nativo (Kotlin)
-
-Clean Architecture
-
-Patrón MVVM
-
-[Retrofit2](https://github.com/square/retrofit "Retrofit2")
-
-[Glide](https://github.com/bumptech/glide "Glide")
-
-[Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html "Kotlin Coroutines")
+- Android Nativo (Kotlin)
+- Clean Architecture
+- Patrón MVVM
+- [Retrofit2](https://github.com/square/retrofit "Retrofit2")
+- [Glide](https://github.com/bumptech/glide "Glide")
+- [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html "Kotlin Coroutines")
 
 ### In Progress
 La aplicación ya es 100% funcional pero se irán añadiendo nuevos desarrollos
